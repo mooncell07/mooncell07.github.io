@@ -46,9 +46,6 @@ padding: 2.5px;
   background: linear-gradient(120deg, var(--color-nav1), var(--color-nav2), var(--color-posts1), var(--color-posts2), var(--color-projects1), var(--color-projects2));
 }
 
-.threet1t {
-  background: linear-gradient(120deg, var(--color-projects2), var(--color-flamingo));
-}
 
 .arrow {
   font-size: 1.5em;
@@ -78,10 +75,6 @@ padding: 2.5px;
   <a href="https://ctp-webr.ing/nova/previous" class="arrow">&larr;</a
 ><a href="https://ctp-webr.ing/" class="webring ctp">ctp-webring</a
 ><a href="https://ctp-webr.ing/nova/next" class="arrow">&rarr;</a>
-  |
- <a href="https://3t1t.github.io/nova/previous" class="arrow">&larr;</a
-><a href="https://3t1t.github.io/" class="webring threet1t">3t1t-webring</a
-><a href="https://3t1t.github.io/nova/next" class="arrow">&rarr;</a>
   |
   <a href="/">Home</a>
   |
