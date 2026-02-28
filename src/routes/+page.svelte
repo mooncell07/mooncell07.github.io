@@ -61,8 +61,6 @@
       smooth: 1,
       effects: true,
     });
-    let cat = document.getElementById("Manzar");
-    cat.style.zIndex = "10";
 
     gsap.set("article", { opacity: 1, delay: 0 });
 
