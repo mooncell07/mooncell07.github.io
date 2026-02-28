@@ -1,0 +1,27 @@
+{
+  "reGB": {
+    "desc": "A Nintendo Game Boy Emulator.",
+    "url": "https://github.com/mooncell07/reGB",
+    "langs": ["C", "Python"]
+  },
+  "mayuri": {
+    "desc": "WIP Asynchronous WebSocket Client Library.",
+    "url": "https://github.com/mooncell07/mayuri",
+    "langs": ["Rust"]
+  },
+  "azaka": {
+    "desc": "Python Wrapper for the VNDB REST API.",
+    "url": "https://github.com/mooncell07/Azaka",
+    "langs": ["Python"]
+  },
+  "devnull": {
+    "desc": "A discord bot for assembling and disassembling.",
+    "url": "https://github.com/mooncell07/devnull",
+    "langs": ["Python"]
+  },
+  "3E33.nes": {
+    "desc": "A Nintendo Entertainment System Emulator.",
+    "url": "https://github.com/mooncell07/3E33.nes",
+    "langs": ["Kotlin"]
+  }
+}

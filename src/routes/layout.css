@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+:root {
+  --base: #191724;
+  --surface: #1f1d2e;
+  --overlay: #26233a;
+  --muted: #6e6a86;
+  --subtle: #908caa;
+  --text: #e0def4;
+  --love: #eb6f92;
+  --gold: #f6c177;
+  --rose: #ebbcba;
+  --pine: #31748f;
+  --foam: #9ccfd8;
+  --iris: #c4a7e7;
+  --highlightLow: #21202e;
+  --highlightMed: #403d52;
+  --highlightHigh: #524f67;
+}
+@custom-variant hover (&:hover);
+
+@font-face {
+  font-family: "PixelOperator";
+  src: url("/fonts/PixelOperator-Bold.woff2") format("woff2");
+  font-display: swap;
+}
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scrollbar-color: var(--love) var(--base);
+}
+
+body {
+  font-family: "IBM Plex Mono";
+  background-color: var(--base);
+}
+
+@layer utilities {
+  .text-shadow-glow {
+    text-shadow: 0.05em 0.05em 0 var(--love);
+  }
+  .entryTitle {
+    @apply flex justify-center pt-4 font-bold text-2xl md:text-2xl lg:text-4xl;
+  }
+  .entrySymbol {
+    @apply font-bold pr-1;
+  }
+  .entry {
+    @apply flex text-(--text) font-semibold text-lg md:text-lg lg:text-2xl;
+  }
+}
+
+#projects #projectsTitle {
+  font-family: "PixelOperator";
+}
+
+#blogs #blogsTitle {
+  font-family: "PixelOperator";
+}
+
+#projectsGrid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+#blogGrid {
+  display: grid;
+  width: 100%;
+  max-height: 20em;
+  overflow-y: auto;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+#nav img {
+  animation: snap 1s steps(2) infinite;
+}
+
+#landing h1 {
+  font-family: "PixelOperator";
+  animation: snap 1s steps(2) infinite;
+}
+
+.star {
+  display: inline-block;
+  animation: snapImg 1.5s steps(1) infinite;
+}
+
+@keyframes snapImg {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-8deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@keyframes snap {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

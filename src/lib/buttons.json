@@ -1,0 +1,38 @@
+{
+  "mooncell07.gif": {
+    "link": "https://mooncell07.me",
+    "alt": "ZER0 SE7EN"
+  },
+  "zeffo.gif": {
+    "link": "https://zeffo.me/",
+    "alt": "zeffo.me"
+  },
+  "bestvieweddesktop.gif": {
+    "link": null,
+    "alt": "This site is best viewed on desktop"
+  },
+  "e-scp.gif": {
+    "link": "https://scp-wiki.wikidot.com/",
+    "alt": "The SCP Foundation"
+  },
+  "gb.gif": {
+    "link": "https://github.com/mooncell07/reGB",
+    "alt": "Gameboy"
+  },
+  "archlinux.jpeg": {
+    "link": "https://archlinux.org/",
+    "alt": "Arch Linux"
+  },
+  "antiai.jpeg": {
+    "link": null,
+    "alt": "This is an anti AI site"
+  },
+  "rust.jpeg": {
+    "link": "https://rustfoundation.org/",
+    "alt": "Run Rust"
+  },
+  "neovim.jpeg": {
+    "link": "https://neovim.io/",
+    "alt": "Made with Neovim"
+  }
+}

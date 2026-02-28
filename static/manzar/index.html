@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Manzar Example</title>
+  </head>
+  <body>
+    <button>hello world this is a button!</button>
+    <script type="module">
+      import init, { start } from "./pkg/manzar.js";
+      async function run() {
+        await init();
+        await start("Manzar", "./kitty.gif", 100, 100);
+      }
+      run();
+    </script>
+  </body>
+</html>
