@@ -51,10 +51,10 @@
     },
   ];
 
-  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
   let smoother = $state();
 
   onMount(() => {
+    gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
     smoother = ScrollSmoother.create({
       wrapper: "main",
       content: "article",
