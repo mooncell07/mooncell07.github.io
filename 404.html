@@ -1,37 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
+    <script type="module">
+      import init, { start } from "/manzar/pkg/manzar.js";
+
+      async function run() {
+        await init();
+        await start("Manzar", "/manzar/kitty.gif", 100, 100);
+      }
+      run()
+    </script>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/red-panda.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta property="og:title" content="Mooncell07" />
-    <meta property="og:description" content="Nova's Personal Website." />
-    <meta property="og:image" content="https://mooncell07.me/assets/red-panda-cute.png" />
-    <meta property="og:url" content="https://mooncell07.me" />
-    <meta property="og:type" content="website" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+  
     
-		<link rel="modulepreload" href="/_app/immutable/entry/start.DhfddgO3.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/JmMmAwZg.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/kZamP0gY.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/C6z44uSH.js">
-		<link rel="modulepreload" href="/_app/immutable/entry/app.BTruIIbK.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/9sgnKYe_.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/BZKmgxaD.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/DsfO0tf4.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/start.eh8m8GB0.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/JBZNuqFZ.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/CdGuxpLL.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/DIeogL5L.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/ChLXioOQ.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/app.1qyW2sTs.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/c_7VUM3y.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/DSnGjLIN.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/DsnmJJEf.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/CPhgQEX7.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/Bqe6NE4N.js">
   </head>
-  <body>
-    <div id="svelte">
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">
 			<script>
 				{
-					__sveltekit_e0gar8 = {
+					__sveltekit_15whdug = {
 						base: ""
 					};
 
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("/_app/immutable/entry/start.DhfddgO3.js"),
-						import("/_app/immutable/entry/app.BTruIIbK.js")
+						import("/_app/immutable/entry/start.eh8m8GB0.js"),
+						import("/_app/immutable/entry/app.1qyW2sTs.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element);
 					});
