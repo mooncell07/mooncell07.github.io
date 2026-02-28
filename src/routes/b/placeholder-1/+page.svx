@@ -1,8 +1,0 @@
----
-title: "Placeholder 1"
-date: "2025-02-13"
-published: "true"
-description: "The first one!"
----
-
-

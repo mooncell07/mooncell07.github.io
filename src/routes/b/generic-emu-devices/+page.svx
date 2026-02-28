@@ -1,0 +1,7 @@
+---
+title: "Generic Emulator Devices"
+date: "2025-02-28"
+published: "true"
+description: "Generic way of implementing and integrating different memory mapped emulator devices."
+---
+
