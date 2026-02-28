@@ -1,60 +1,458 @@
-<style>
+<script lang="ts">
+  import buttons from "$lib/buttons.json";
+  import projects from "$lib/projects.json";
+  import Nav from "$lib/components/Nav.svelte";
+  import Footer from "$lib/components/Footer.svelte";
 
-.index-projects {
-  background: radial-gradient(circle, var(--color-projects2), var(--color-projects1));
-  font-size: 1.5em;
-  font-weight: 600;
-  animation: scroll 2s linear infinite;
-  background-size: 200% 200%;
-  background-clip: text;
-  color: transparent;
-  text-decoration: underline;
-}
+  import gsap from "gsap";
+  import { onMount } from "svelte";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { ScrollSmoother } from "gsap/ScrollSmoother";
+  import ScrollToTop from "$lib/components/ScrollToTop.svelte";
 
-.index-posts {
-  background: radial-gradient(circle, var(--color-posts1), var(--color-posts2));
-  font-size: 1.5em;
-  font-weight: 600;
-  animation: scroll 2s linear infinite;
-  background-size: 200% 200%;
-  background-clip: text;
-  color: transparent;
-}
+  let { data } = $props();
 
+  let contributions = $state(0);
+  let admin_status = $state("offline");
+  let status_path = $state("sprites/Sprite-0005-export.gif");
 
-</style>
+  const langColorTable = $state({
+    C: "--text",
+    Python: "--foam",
+    Rust: "--rose",
+    Kotlin: "--iris",
+    JavaScript: "--gold",
+    Go: "--pine",
+  });
 
-<div class="container">
-  <div class="container-title">Welcome!</div>
-  <div class="container-content"> Hey, this is nova/mooncell07, welcome to my personal blogging site. I developed this
-  site as part of learning Web Development. My main interests include Emulator
-  Development and Network Programming though i do enjoy exploring other areas in tech. I also love playing games, and reading Visual Novels, 
-  Currently i am reading Umineko no Naku Koro ni Chiru.<br><br>
+  const langIconTable = $state({
+    Python: '<i class="fa-brands fa-python"></i>',
+    Rust: '<i class="fa-brands fa-rust"></i>',
+    JavaScript: '<i class="fa-brands fa-js"></i>',
+    Go: '<i class="fa-brands fa-golang"></i>',
+  });
 
-  This site uses the SvelteKit Frontend framework and color scheme is a combination of Rose Pine and Catppuccin.
-  I think both the color schemes work well together.
-  </div>
+  let navEntries = [
+    { name: "Home", wide: "#home", narrow: "#home" },
+    { name: "Projects", wide: "#projects", narrow: "#projects" },
+    { name: "Blog", wide: "#blogs", narrow: "#blogs" },
+  ];
 
-  <div class="index">
-    <div class="index-entry">
-      <a href="/Projects"><div class="index-projects">Projects</div></a>
-      <div class="index-comment">(Some of my open source projects.)</div>
-    </div>
+  let socialEntries = [
+    {
+      name: "Github",
+      link: "https://github.com/mooncell07",
+      icon: '<i class="fa-brands fa-github"></i>',
+    },
+    {
+      name: "Reddit",
+      link: "https://www.reddit.com/user/fcomdword/",
+      icon: '<i class="fa-brands fa-reddit"></i>',
+    },
+  ];
 
-    <div class="index-entry">
-      <a href="/Posts"><div class="index-posts">Posts</div></a>
-      <div class="index-comment">(Some random chatrooms.)</div>
-    </div>
-  </div>
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+  let smoother = $state();
 
-  <div class="container-content" style="margin-top:0.5em;">
-  Any issues/pull requests to this site are welcomed.
-  You can find the repository for this site <a href="https://github.com/mooncell07/site">here</a>.<br>
+  onMount(() => {
+    smoother = ScrollSmoother.create({
+      wrapper: "main",
+      content: "article",
+      smooth: 1,
+      effects: true,
+    });
+    let cat = document.getElementById("Manzar");
+    cat.style.zIndex = "10";
 
-  </div>
+    gsap.set("article", { opacity: 1, delay: 0 });
 
+    smoother.effects(".blogCard", { lag: (i) => i * 0.03 });
+    smoother.effects(".projectCard", { lag: (i) => i * 0.03 });
 
-  <img src="assets/red-panda-cute.png" alt="" width=100vh height=100vh style="margin-top: 0.5em; margin-bottom: 2em">
+    gsap.registerEffect({
+      name: "fade",
+      effect: (targets, config) => {
+        return gsap.from(targets, {
+          y: config.y,
+          delay: 0,
+          duration: config.duration,
+          opacity: 0,
+        });
+      },
+      defaults: { duration: 0.5 },
+      extendTimeline: true,
+    });
 
+    const landingTimeline = gsap.timeline({ defaults: { delay: 0 } });
+    landingTimeline
+      .from("#landingTitle", { opacity: 0, duration: 0.8 })
+      .fade("#landingDescription", { y: 2 });
 
-</div>
+    gsap.to("#landingFooter", {
+      opacity: 0,
+      scrollTrigger: {
+        scrub: true,
+      },
+    });
+
+    let scrollToTopButton = document.getElementById("scrollToTopButton");
+
+    gsap.to("#scrollToTop", {
+      scrollTrigger: {
+        trigger: "#home",
+        scrub: true,
+        start: "top center",
+        end: "+=400",
+
+        onEnter: ({}) => {
+          scrollToTopButton.style.pointerEvents = "auto";
+        },
+        onLeaveBack: ({}) => {
+          scrollToTopButton.style.pointerEvents = "none";
+        },
+      },
+      opacity: 1,
+      y: -5,
+    });
+    async function getContributions() {
+      const year = new Date().getFullYear();
+      let response = await fetch(
+        "https://github-contributions-api.jogruber.de/v4/mooncell07",
+      );
+      if (!response.ok) {
+        throw new Error(
+          `Fetch error from contributions api: ${response.status}`,
+        );
+      }
+      const contrs = await response.json();
+      contributions = contrs["total"][year];
+    }
+
+    async function getStatus() {
+      let response = await fetch(
+        "https://api.lanyard.rest/v1/users/1240115640745070663",
+      );
+      if (!response.ok) {
+        throw new Error(`Fetch error from status api: ${response.status}`);
+      }
+      const data = await response.json();
+      admin_status = data["data"]["discord_status"];
+      if (admin_status == "online") {
+        status_path = "sprites/Sprite-0003.gif";
+      }
+    }
+    getContributions();
+    getStatus();
+  });
+</script>
+
+<Nav {navEntries} {smoother} />
+<ScrollToTop {smoother} />
+<main class="container mx-auto px-4">
+  <article class="flex flex-col opacity-0">
+    <section
+      id="landing"
+      class="flex flex-col items-center justify-center min-h-[100svh]"
+    >
+      <div id="landingContent" class="flex flex-col items-center mt-auto gap-1">
+        <div id="landingTitle" class="select-none flex flex-row items-end">
+          <h1
+            class="text-5xl md:text-8xl lg:text-9xl text-(--text) text-shadow-glow"
+          >
+            mooncell07
+          </h1>
+          <img
+            src="sprites/Sprite-0004.gif"
+            alt="Star"
+            class="star size-18 md:size-30 lg:size-40 mb-2"
+          />
+        </div>
+        <p
+          id="landingDescription"
+          class="text-base md:text-md lg:text-lg max-w-200 text-center font-semibold text-(--highlightHigh)"
+          style="font-family: IBM Plex Mono;"
+        >
+          Welcome to my side of the Internet!
+        </p>
+      </div>
+      <div
+        id="landingFooter"
+        class="flex flex-col justify-center items-center gap-4 mb-2 mt-auto"
+      >
+        <div id="gotoHome" title="Go to Home" class="text-lg md:text-xl">
+          <i
+            class="text-2xl text-(--overlay) animate-bounce fa-solid fa-arrow-down"
+          ></i>
+        </div>
+      </div>
+    </section>
+    <section id="home" class="flex flex-col justify-center items-center mb-10">
+      <div
+        id="homeContainer"
+        class="bg-(--surface) rounded-lg shadow-lg text-(--text) flex flex-col pt-[2ch] pb-[2ch] lg:max-w-[75%]"
+      >
+        <div
+          class="flex flex-row max-w-fit self-center self-center md:self-start ml-[1.5ch] mb-[0.5ch] md:mb-0"
+        >
+          <img
+            id="mobileStart"
+            src="https://avatars.githubusercontent.com/u/80042274?v=4"
+            aria-hidden="true"
+            class="rounded-full size-30"
+            alt="mooncell07 profile picture"
+          />
+          <div class="font-medium flex flex-col m-[2ch]">
+            <span class="text-lg md:text-xl lg:text-2xl">Nova</span>
+            <span class="text-sm md:text-base lg:text-lg text-(--subtle) pb-1"
+              >a.k.a mooncell07</span
+            >
+            <div class="flex gap-[0.5ch]">
+              <div
+                class="overflow-hidden bg-(--overlay) rounded-lg flex flex-row justify-center items-center max-w-fit pl-1 pr-1 gap-1"
+              >
+                <img
+                  src={status_path}
+                  class="select-none size-8"
+                  alt="Nova is {admin_status}"
+                />
+
+                <div class="flex font-semibold text-sm md:text-base lg:text-lg">
+                  {#if admin_status == "online"}<span
+                      class="animate-pulse text-(--love)">Online</span
+                    >
+                  {:else}<span class="text-(--muted)">Offline</span>{/if}
+                </div>
+              </div>
+
+              <div
+                class="text-base md:text-lg lg:text-xl bg-(--overlay) rounded-lg justify-center items-center max-w-fit pl-2 pr-2 flex gap-2"
+              >
+                {#each socialEntries as se}
+                  <a href={se.link}>
+                    <span class="hover:text-(--love) cursor-pointer">
+                      {@html se.icon}
+                    </span>
+                  </a>
+                {/each}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-[1ch] pl-[1ch] pr-[1ch]">
+          <div>
+            <h1
+              class="flex gap-[0.5ch] items-center text-base md:text-lg md:text-xl font-bold"
+            >
+              <i class="fa-regular fa-star text-(--love) hover:animate-pulse"
+              ></i>
+              ABOUT ME
+            </h1>
+            <div
+              class="flex flex-col text-sm md:text-base lg:text-lg font-medium"
+            >
+              <span class="pb-[1ch]">
+                Hello this is Nova. I'm a Computer Science Major, currently
+                enrolled in a Postgraduate CS Programme. I'm also a hobbyist
+                Open Source Dev. You can contact me on my mail: <span
+                  class="font-semibold text-(--love)">mooncell07@proton.me</span
+                ></span
+              >
+              <span>
+                This site is built using the SvelteKit Web Framework & hosted on
+                Github Pages.
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <h1
+              class="flex gap-[0.5ch] items-center text-base md:text-lg lg:text-xl font-bold"
+            >
+              <i class="fa-regular fa-star text-(--iris) hover:animate-pulse"
+              ></i>
+              SYSTEM
+            </h1>
+            <p class="text-sm md:text-base lg:text-lg font-medium">
+              I daily drive Arch Linux with Niri Window Manager. For Code
+              Editing i use Neovim with LazyVim setup. My Dotfiles are available
+              @ <a href="https://github.com/mooncell07/Dotfiles" class="gap-0"
+                ><i class="fa-brands fa-github"></i>/<span
+                  class="text-(--love) hover:underline font-semibold"
+                  >dotfiles</span
+                >
+              </a>.
+            </p>
+          </div>
+
+          <div>
+            <h1
+              class="flex gap-[0.5ch] items-center text-base md:text-lg lg:text-xl font-bold"
+            >
+              <i class="fa-regular fa-star text-(--rose) hover:animate-pulse"
+              ></i>
+              LANGUAGES
+            </h1>
+            <div
+              class="flex flex-row flex-wrap gap-2 pt-[0.5ch] font-semibold text-base md:text-lg"
+            >
+              {#each Object.entries(langIconTable) as [key, value]}
+                <div
+                  class="flex items-center pl-1 pr-1 gap-[0.5ch] bg-(--overlay) rounded-lg"
+                >
+                  <span style="color: var({langColorTable[key]})"
+                    >{@html value}</span
+                  >
+                  <span>{key}</span>
+                </div>
+              {/each}
+            </div>
+          </div>
+        </div>
+        <hr class="mt-6 mb-6 w-1/2 border-(--overlay) mx-auto" />
+        <div class="flex flex-col justify-center items-center">
+          <div class="flex flex-row flex-wrap gap-2 justify-center">
+            {#each Object.entries(buttons) as [key, value]}
+              {#if value.link != null}
+                <a href={value.link}>
+                  <img src="/88x31s/{key}" alt={value.alt} />
+                </a>
+              {:else}
+                <img src="/88x31s/{key}" alt={value.alt} />
+              {/if}
+            {/each}
+          </div>
+        </div>
+
+        <div
+          class="flex text-lg md:text-xl mt-4 gap-2 justify-center items-center text-(--text)"
+        >
+          <a href="https://ctp-webr.ing/nova/previous" title="CTP Webring Left"
+            ><i class="fa-solid fa-arrow-left duration-150 hover:text-(--love)"
+            ></i></a
+          ><a href="https://ctp-webr.ing/"
+            ><img
+              src="./pictures/catppuccin.png"
+              alt="ctp-webring"
+              class="size-8 md:size-10"
+            /></a
+          ><a href="https://ctp-webr.ing/nova/next" title="CTP Webring Right"
+            ><i class="fa-solid fa-arrow-right duration-150 hover:text-(--love)"
+            ></i></a
+          >
+        </div>
+      </div>
+    </section>
+    <section
+      id="projects"
+      class="flex flex-col justify-center items-center mb-10"
+    >
+      <div
+        id="projectsContainer"
+        class="flex flex-col gap-4 items-center md:items-start lg:w-[75%]"
+      >
+        <div class="select-none flex flex-row items-end">
+          <h1
+            id="projectsTitle"
+            class=" text-5xl md:text-7xl text-(--text) text-shadow-glow"
+          >
+            Projects
+          </h1>
+          <img
+            id="projectsTitleImage"
+            src="sprites/Sprite-0006.gif"
+            alt="projects star"
+            class="star size-15 md:size-30 mb-1"
+          />
+        </div>
+        <div id="projectsGrid">
+          {#each Object.entries(projects) as [key, value]}
+            <div class="grid grid-cols-1 grid-rows-1 projectCard">
+              <div
+                class="col-start-1 row-start-1 flex flex-col flex-1 p-[1ch] bg-(--surface) rounded-lg border-(--overlay) shadow-lg"
+              >
+                <h1
+                  class="font-bold text-base md:text-lg lg:text-xl pb-[0.5ch]"
+                  style="color: var({langColorTable[value.langs[0]]});"
+                >
+                  <a href={value.url}>{key}</a>
+                </h1>
+                <p
+                  class="text-(--text) pb-[1ch] font-medium text-sm md:text-base lg:text-lg flex-1"
+                >
+                  {value.desc}
+                </p>
+                <div>
+                  {#each value.langs as lang}
+                    <span
+                      class="pl-2 pr-2 mr-1 rounded-lg bg-(--overlay) font-semibold text-base"
+                      style="color: var({langColorTable[lang]});">{lang}</span
+                    >
+                  {/each}
+                </div>
+              </div>
+              <div
+                class="col-start-1 row-start-1 flex justify-center items-center rounded-lg opacity-0 duration-250 hover:opacity-100 hover:backdrop-blur-sm hover:bg-(--overlay)/30"
+              >
+                <a href={value.url}>
+                  <div
+                    class="font-bold text-lg md:text-xl lg:text-2xl"
+                    style="color: var({langColorTable[value.langs[0]]});"
+                  >
+                    <i class="fa-brands fa-github text-(--text)"></i><span
+                      class="text-(--text)">/</span
+                    >{key}
+                  </div>
+                </a>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </section>
+    <section id="blogs" class="flex flex-col justify-center items-center mb-10">
+      <div
+        id="BlogsContainer"
+        class="flex flex-col gap-4 items-center md:items-start lg:w-[75%]"
+      >
+        <div class="select-none flex flex-row items-end">
+          <h1
+            id="blogsTitle"
+            class=" text-5xl md:text-7xl text-(--text) text-shadow-glow"
+          >
+            Blog
+          </h1>
+          <img
+            src="sprites/Sprite-0008.gif"
+            alt="blogs star"
+            class="star size-15 md:size-30 mb-1"
+          />
+        </div>
+        <div id="blogGrid">
+          {#each data.blogs as b}
+            <div
+              class="blogCard flex flex-col p-[1ch] bg-(--surface) duration-250 hover:bg-(--overlay) shadow-lg rounded-lg"
+            >
+              <a href="b/{b.slug}">
+                <h1
+                  class="font-bold text-base md:text-lg lg:text-xl text-(--text)"
+                >
+                  {b.title}
+                </h1>
+                <span class="text-(--highlightHigh) text-xs italic pb-[0.5ch]"
+                  >{b.date}</span
+                >
+                <hr class="mb-2 w-1/3 border-2 border-(--love)" />
+
+                <span class="text-(--text) font-medium text-sm md:text-base">
+                  {b.description}
+                </span>
+              </a>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </section>
+    <Footer />
+  </article>
+</main>
