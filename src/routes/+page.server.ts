@@ -2,7 +2,7 @@ import type { Blog } from "$lib/types";
 
 export async function load() {
   let blogs: Blog[] = [];
-  const paths = import.meta.glob("/b/*/*.svx", {eager:true});
+  const paths = import.meta.glob("/src/routes/b/*/*.svx", {eager:true});
 
   for (const path in paths) {
     const slug = path.split("/").at(-2)?.replace(".svx", "");

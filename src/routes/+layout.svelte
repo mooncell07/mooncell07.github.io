@@ -25,7 +25,5 @@
     type="font/woff2"
     crossorigin="anonymous"
   />
-
-  <link rel="preload" href="sprites/Sprite-0004.gif" as="image" />
 </svelte:head>
 {@render children()}
