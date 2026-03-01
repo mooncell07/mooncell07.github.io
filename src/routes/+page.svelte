@@ -12,17 +12,16 @@
 
   let { data } = $props();
 
-  let contributions = $state(0);
   let admin_status = $state("offline");
   let status_path = $state("sprites/Sprite-0005-export.gif");
 
   const langColorTable = $state({
-    C: "--text",
-    Python: "--foam",
-    Rust: "--rose",
-    Kotlin: "--iris",
-    JavaScript: "--gold",
-    Go: "--pine",
+    C: { primary: "--text", secondary: "--textSecondary" },
+    Python: { primary: "--foam", secondary: "--foamSecondary" },
+    Rust: { primary: "--rose", secondary: "--roseSecondary" },
+    Kotlin: { primary: "--iris", secondary: "--irisSecondary" },
+    JavaScript: { primary: "--gold", secondary: "--goldSecondary" },
+    Go: { primary: "--pine", secondary: "--pineSecondary" },
   });
 
   const langIconTable = $state({
@@ -112,19 +111,6 @@
       opacity: 1,
       y: -5,
     });
-    async function getContributions() {
-      const year = new Date().getFullYear();
-      let response = await fetch(
-        "https://github-contributions-api.jogruber.de/v4/mooncell07",
-      );
-      if (!response.ok) {
-        throw new Error(
-          `Fetch error from contributions api: ${response.status}`,
-        );
-      }
-      const contrs = await response.json();
-      contributions = contrs["total"][year];
-    }
 
     async function getStatus() {
       let response = await fetch(
@@ -139,7 +125,6 @@
         status_path = "sprites/Sprite-0003.gif";
       }
     }
-    getContributions();
     getStatus();
   });
 </script>
@@ -187,7 +172,7 @@
     <section id="home" class="flex flex-col justify-center items-center mb-10">
       <div
         id="homeContainer"
-        class="bg-(--surface) rounded-lg shadow-lg text-(--text) flex flex-col pt-[2ch] pb-[2ch] lg:max-w-[75%]"
+        class="bg-(--surface) rounded-lg shadow-base text-(--text) flex flex-col pt-[2ch] pb-[2ch] lg:max-w-[75%]"
       >
         <div
           class="flex flex-row max-w-fit self-center self-center md:self-start ml-[1.5ch] mb-[0.5ch] md:mb-0"
@@ -206,7 +191,7 @@
             >
             <div class="flex gap-[0.5ch]">
               <div
-                class="overflow-hidden bg-(--overlay) rounded-lg flex flex-row justify-center items-center max-w-fit pl-1 pr-1 gap-1"
+                class="overflow-hidden bg-(--loveSecondary) rounded-md flex flex-row justify-center items-center max-w-fit px-2 gap-[0.5ch]"
               >
                 <img
                   src={status_path}
@@ -214,20 +199,24 @@
                   alt="Nova is {admin_status}"
                 />
 
-                <div class="flex font-semibold text-sm md:text-base lg:text-lg">
-                  {#if admin_status == "online"}<span
-                      class="animate-pulse text-(--love)">Online</span
+                <div
+                  class="flex font-semibold text-sm md:text-base text-(--love)"
+                >
+                  {#if admin_status == "online"}<span class="animate-pulse"
+                      >Online</span
                     >
-                  {:else}<span class="text-(--muted)">Offline</span>{/if}
+                  {:else}Offline{/if}
                 </div>
               </div>
 
               <div
-                class="text-base md:text-lg lg:text-xl bg-(--overlay) rounded-lg justify-center items-center max-w-fit pl-2 pr-2 flex gap-2"
+                class="bg-(--overlay) rounded-md justify-center items-center max-w-fit px-2 flex gap-2"
               >
                 {#each socialEntries as se}
                   <a href={se.link}>
-                    <span class="hover:text-(--love) cursor-pointer">
+                    <span
+                      class="hover:text-(--love) text-lg md:text-xl duration-150 cursor-pointer"
+                    >
                       {@html se.icon}
                     </span>
                   </a>
@@ -291,17 +280,21 @@
               ></i>
               LANGUAGES
             </h1>
-            <div
-              class="flex flex-row flex-wrap gap-2 pt-[0.5ch] font-semibold text-base md:text-lg"
-            >
+            <div class="flex flex-row flex-wrap gap-[0.5ch] pt-[0.5ch]">
               {#each Object.entries(langIconTable) as [key, value]}
                 <div
-                  class="flex items-center pl-1 pr-1 gap-[0.5ch] bg-(--overlay) rounded-lg"
+                  class="flex items-center px-2 py-0.5 gap-[0.5ch] rounded-md font-semibold text-base md:text-md"
+                  style="background-color: var({langColorTable[key][
+                    'secondary'
+                  ]});
+                  "
                 >
-                  <span style="color: var({langColorTable[key]})"
-                    >{@html value}</span
+                  <div
+                    class="flex items-center justify-center gap-[0.5ch]"
+                    style="color: var({langColorTable[key]['primary']})"
                   >
-                  <span>{key}</span>
+                    {@html value}<span>{key}</span>
+                  </div>
                 </div>
               {/each}
             </div>
@@ -367,11 +360,13 @@
           {#each Object.entries(projects) as [key, value]}
             <div class="grid grid-cols-1 grid-rows-1 projectCard">
               <div
-                class="col-start-1 row-start-1 flex flex-col flex-1 p-[1ch] bg-(--surface) rounded-lg border-(--overlay) shadow-lg"
+                class="col-start-1 row-start-1 flex flex-col flex-1 p-[1ch] bg-(--surface) rounded-lg border-(--overlay) shadow-base"
               >
                 <h1
                   class="font-bold text-base md:text-lg lg:text-xl pb-[0.5ch]"
-                  style="color: var({langColorTable[value.langs[0]]});"
+                  style="color: var({langColorTable[value.langs[0]][
+                    'primary'
+                  ]});"
                 >
                   <a href={value.url}>{key}</a>
                 </h1>
@@ -383,8 +378,11 @@
                 <div>
                   {#each value.langs as lang}
                     <span
-                      class="pl-2 pr-2 mr-1 rounded-lg bg-(--overlay) font-semibold text-base"
-                      style="color: var({langColorTable[lang]});">{lang}</span
+                      class="px-2 mr-1 rounded-lg font-semibold text-sm"
+                      style="background-color: var({langColorTable[lang][
+                        'secondary'
+                      ]}); color: var({langColorTable[lang]['primary']});"
+                      >{lang}</span
                     >
                   {/each}
                 </div>
@@ -395,7 +393,9 @@
                 <a href={value.url}>
                   <div
                     class="font-bold text-lg md:text-xl lg:text-2xl"
-                    style="color: var({langColorTable[value.langs[0]]});"
+                    style="color: var({langColorTable[value.langs[0]][
+                      'primary'
+                    ]});"
                   >
                     <i class="fa-brands fa-github text-(--text)"></i><span
                       class="text-(--text)">/</span
@@ -429,7 +429,7 @@
         <div id="blogGrid">
           {#each data.blogs as b}
             <div
-              class="blogCard flex flex-col p-[1ch] bg-(--surface) duration-250 hover:bg-(--overlay) shadow-lg rounded-lg"
+              class="blogCard flex flex-col p-[1ch] bg-(--surface) duration-250 hover:bg-(--overlay) shadow-base rounded-lg"
             >
               <a href="b/{b.slug}">
                 <h1
