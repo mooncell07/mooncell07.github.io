@@ -300,7 +300,6 @@
             </div>
           </div>
         </div>
-        <hr class="mt-6 mb-6 w-1/2 border-(--overlay) mx-auto" />
         <div class="flex flex-col justify-center items-center">
           <div class="flex flex-row flex-wrap gap-2 justify-center">
             {#each Object.entries(buttons) as [key, value]}
