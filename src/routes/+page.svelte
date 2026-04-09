@@ -300,7 +300,7 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-col justify-center items-center pt-[0.5ch]">
+        <div class="flex flex-col justify-center items-center pt-2">
           <div class="flex flex-row flex-wrap gap-2 justify-center">
             {#each Object.entries(buttons) as [key, value]}
               {#if value.link != null}
