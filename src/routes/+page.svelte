@@ -396,9 +396,7 @@
                       'primary'
                     ]});"
                   >
-                    <i class="fa-brands fa-github text-(--text)"></i><span
-                      class="text-(--text)">/</span
-                    >{key}
+                    <i class="fa-brands fa-github"></i><span>/</span>{key}
                   </div>
                 </a>
               </div>
